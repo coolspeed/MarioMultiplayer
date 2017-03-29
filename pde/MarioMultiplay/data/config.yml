@@ -1,0 +1,5 @@
+room_num: "123456"
+my_mario_num: 0
+my_frictional_force: 0.1  # 정상 0.4.   얼음 세상: 0.1
+server_host: 10.10.61.104
+show_packet_indicator: true
