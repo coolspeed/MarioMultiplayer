@@ -3,7 +3,7 @@ Mario Multiplayer
 
 Supermario multiplayer game, written in Java ([Processing](https://processing.org/) Java Mode) using [ZeroMQ](http://zeromq.org/) ([JeroMQ](https://github.com/zeromq/jeromq)).
 
-It include a server which is written in C# using ZeroMQ ([NetMQ](https://github.com/zeromq/netmq)).
+It includes a server which is written in C# using ZeroMQ ([NetMQ](https://github.com/zeromq/netmq)).
 
 It's netcode is based on [State Synchronization](http://gafferongames.com/networked-physics/state-synchronization/).
 
