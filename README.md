@@ -15,3 +15,8 @@ This project is developped as a team joining homework of [What! Studio](https://
 
 The mario who first steps over the other wins.
 
+## Design philosophy
+
+Described in my blog (in Korean):
+
+https://coolspeed.wordpress.com/2017/04/11/supermario_multiplayer_postmortem/
