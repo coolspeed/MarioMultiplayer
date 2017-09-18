@@ -20,3 +20,5 @@ The mario who first steps over the other wins.
 Described in my blog (in Korean):
 
 https://coolspeed.wordpress.com/2017/04/11/supermario_multiplayer_postmortem/
+
+![Game Intro GIF](https://coolspeed.files.wordpress.com/2017/04/enemycd.gif?w=630)
