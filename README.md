@@ -1,9 +1,11 @@
 Mario Multiplayer
 =================
 
+![Game Intro GIF](https://coolspeed.files.wordpress.com/2017/04/enemycd.gif?w=630)
+
 Supermario multiplayer game, written in Java ([Processing](https://processing.org/) Java Mode) using [ZeroMQ](http://zeromq.org/) ([JeroMQ](https://github.com/zeromq/jeromq)).
 
-It includes a server which is written in C# using ZeroMQ ([NetMQ](https://github.com/zeromq/netmq)).
+This repo also includes a server which is written in C# using ZeroMQ ([NetMQ](https://github.com/zeromq/netmq)).
 
 It's netcode is based on [State Synchronization](http://gafferongames.com/networked-physics/state-synchronization/).
 
@@ -20,5 +22,3 @@ The mario who first steps over the other wins.
 Described in my blog (in Korean):
 
 https://coolspeed.wordpress.com/2017/04/11/supermario_multiplayer_postmortem/
-
-![Game Intro GIF](https://coolspeed.files.wordpress.com/2017/04/enemycd.gif?w=630)
