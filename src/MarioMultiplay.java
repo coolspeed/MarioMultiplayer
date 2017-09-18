@@ -55,7 +55,7 @@ public class MarioMultiplay extends PApplet {
     String XPUB_PORT = "5678";
     int MY_MARIO_NUM;
     String ROOM_NUM;
-    float MY_FRICTIONAL_FORCE = 0.4f;  // ���� 0.4.   ���� ����: 0.1
+    float MY_FRICTIONAL_FORCE = 0.4f;  // 0.4 for normal world.  0.1 for ice world.
     boolean SHOW_PACKET_INDICATOR;
     boolean PACKET_FRUGAL = true;
     
@@ -139,7 +139,7 @@ public class MarioMultiplay extends PApplet {
             mario1 = marioMe;
             mario0 = marioRival;
         }
-        // ������1�� ������0�� �����ʿ�
+        // Mario1 positioned at the right of mario0
         mario1.x = mario0.x + 300;
         
         // BGM
@@ -167,7 +167,7 @@ public class MarioMultiplay extends PApplet {
         // Keyboard event queue
         pendingKeyboardEvents = new HashSet<String>();
         
-        // Subscriber thread: �� msgQueue �� �ʱ�ȭ �� �Ŀ� ������ �����带 ��Ī ���Ѿ�!
+        // Subscriber thread mst be launched after msgQueue is initialized!
         new Thread(new Subscriber()).start();
     }
     
@@ -217,7 +217,7 @@ public class MarioMultiplay extends PApplet {
 
     /**
      * Called once every time a key is released. The key that was released will
-     * be stored in the key variable.
+     * be stored in the 'key' member variable of PApplet.
      */
     public void keyReleased() {
         marioMe.onKeyRelease(key);
@@ -244,8 +244,8 @@ public class MarioMultiplay extends PApplet {
 
     
     public void doNetworkStuff() {
-        networkWrite();  // ���� ������ �� ������ ���� ������
-        networkRead();  // ��Ʈ �������� ��������
+        networkWrite();    // First, send my mario's state, which is already set,
+        networkRead();     // then set up ghost mario's state from what received.
     }
     
     public void networkRead() {
@@ -296,7 +296,7 @@ public class MarioMultiplay extends PApplet {
             }
             break;
         case "MARIO_STATE":
-            // ������ ���� ����
+            // Setting mario state
             marioRival.x = packet.x;
             marioRival.y = packet.y;
             marioRival.vx = packet.vx;
@@ -525,14 +525,14 @@ public class MarioMultiplay extends PApplet {
             return x + 0.5f * width;
         }
         
-        // ��Ʈ�ڽ� ���� �� ����
+        // Top two points of the hitbox
         public Coordinate[] getHitboxTop() {
             Coordinate vertx1 = new Coordinate(x + 2, y);
             Coordinate vertx2 = new Coordinate(x + width - 2, y);
             return new Coordinate[]{vertx1, vertx2};
         }
         
-        // ��Ʈ�ڽ� �Ʒ��� �� ����
+        // Bottom two points of the hitbox
         public Coordinate[] getHitboxBottom() {
             Coordinate vertx1 = new Coordinate(x + 2, y + height);
             Coordinate vertx2 = new Coordinate(x + width - 2, y + height);
@@ -633,7 +633,7 @@ public class MarioMultiplay extends PApplet {
         public void _jump() {
             if (motionState != MotionState.JUMPING) {
                 motionState = MotionState.JUMPING;
-                vy = -MARIO_JUMP_FORCE;  // ���� ƨ���ش�
+                vy = -MARIO_JUMP_FORCE;  // Bounce up!  위로 튕겨주다!
             }
             jumpPressed = true;
         }
@@ -646,24 +646,24 @@ public class MarioMultiplay extends PApplet {
         }
         
         public void _disJump() {
-            // ���� ���� ����
+            // Release the jumping state
             if (motionState == MotionState.JUMPING) motionState = MotionState.STANDING;
             boostJumping = false;
             vy = 0;
         }
         
         public void _friction() {
-            // �����Ͽ� ����
+            // Damping to break
             if (vx > 0 && motionState != MotionState.JUMPING) ax = -frictionalForce;
             else if (vx < 0 && motionState != MotionState.JUMPING) ax = frictionalForce;
         }
 
         public void _left() {
+            // Turn the face to left
             arrowX = MarioArrowX.LEFT;
             
-            // Turn the face to left
             faceState = MarioFace.FACE_LEFT;
-            // ���ִ��Ŷ�� �޷���
+            // Run, if were standing. 서있던거면 달려라
             if (motionState == MotionState.STANDING) motionState = MotionState.RUNNING;
             
             // Give a force to left
@@ -676,7 +676,7 @@ public class MarioMultiplay extends PApplet {
             
             // Turn the face to right
             faceState = MarioFace.FACE_RIGHT;
-            // ���ִ��Ŷ�� �޷���
+            // Run, if were standing. 서있던거면 달려라
             if (motionState == MotionState.STANDING) motionState = MotionState.RUNNING;
             
             // Give a force to right
@@ -688,16 +688,16 @@ public class MarioMultiplay extends PApplet {
             if (arrowX == MarioArrowX.LEFT) {
                 faceState = MarioFace.FACE_LEFT;
                 
-                if (motionState == MotionState.STANDING) {  // �޸��� ����
+                if (motionState == MotionState.STANDING) {  // 달리기 로직
                     motionState = MotionState.RUNNING;
                 }
             } else if (arrowX == MarioArrowX.RIGHT) {
                 faceState = MarioFace.FACE_RIGHT;
-                if (motionState == MotionState.STANDING) {  // �޸��� ����
+                if (motionState == MotionState.STANDING) {  // 달리기 로직
                     motionState = MotionState.RUNNING;
                 }
             } else if (arrowX == MarioArrowX.NONE) {
-                // ���߱� ����
+                // 占쏙옙占쌩깍옙 占쏙옙占쏙옙
                 if (motionState == MotionState.RUNNING) motionState = MotionState.STANDING;
                 _friction();
             }
@@ -706,7 +706,7 @@ public class MarioMultiplay extends PApplet {
         public void _updateSpeed() {
             // Y-axis
             vy += ay;
-            // �ν�Ʈ ����
+            // Boost jump
             if (vy < 0 && vy > -4 && jumpPressed && ! boostJumping) _boostJump();
             
             // X-axis
@@ -760,7 +760,7 @@ public class MarioMultiplay extends PApplet {
             }
             
             // Enemy Collision Detection
-            if (! isGhost) {  // FTS: Favor The Shooter, ��Ʈ�� ��� ������ ����
+            if (! isGhost) {  // FTS: Favor The Shooter. 고스트는 밟기 판정 안함
                 if (enemyCD.isTrample(getHitboxBottom(), marioRival.getHitboxHead(), this)
                         == HitType.ENEMY) {
                     gameOverWinning();
@@ -768,9 +768,9 @@ public class MarioMultiplay extends PApplet {
             }
             
             // Camera following
-            if (getCenterX() - camera.getCenterX() > 0) {  // ������ �ʹ� ���� ��
+            if (getCenterX() - camera.getCenterX() > 0) {  // Mario too right
                 camera.x = getCenterX() - 0.5f * camera.width;
-            } else if (camera.getCenterX() - getCenterX() > CAMERA_RANGE_LEFT) {  // ������ �ʹ� ����
+            } else if (camera.getCenterX() - getCenterX() > CAMERA_RANGE_LEFT) {  // Mario too left
                 camera.x = getCenterX() + CAMERA_RANGE_LEFT - 0.5f * camera.width;
                 if (camera.x < 0) camera.x = 0;
             }
@@ -823,11 +823,11 @@ public class MarioMultiplay extends PApplet {
             }
         }
 
-        public void display(float xpos, float ypos) {  // ���� ��ǥ �ް�
+        public void display(float xpos, float ypos) {  // 월드 좌표 받고
             frame = (frame + 1) % (imageCount * framesPerShot);
             int shotIndex = frame / framesPerShot;
             image(images[shotIndex], xpos - marioMe.camera.x, ypos, images[shotIndex].width,
-                    images[shotIndex].height);  // ī�޶� ��ǥ��� �׷���
+                    images[shotIndex].height);  // 카메라 좌표계로 그려줌
         }
         
         public void display(float xpos, float ypos, boolean reverse) {
@@ -989,7 +989,7 @@ public class MarioMultiplay extends PApplet {
         
         public void display() {
             if (sprite != null) {
-                sprite.display(x, y);  // ���� ��ǥ ����
+                sprite.display(x, y);  // 월드 좌표 받음
             }
         }
     }
@@ -1033,15 +1033,15 @@ public class MarioMultiplay extends PApplet {
                     switch (c) {
                         case ' ' :
                             break;
-                        case '#' : ; block.sprite = spriteGround;  // Ground
+                        case '#' : ; block.sprite = spriteGround;     // Ground
                             break;
-                        case 'B' : block.sprite = spriteBlock;  // Block
+                        case 'B' : block.sprite = spriteBlock;        // Block
                             break;
-                        case 'R' : block.sprite = spriteBrick;  // Block
+                        case 'R' : block.sprite = spriteBrick;        // Block
                             break;
-                        case '?' : block.sprite = spriteQuestion;  // Question mark
+                        case '?' : block.sprite = spriteQuestion;     // Question mark
                             break;
-                        case 'O' : block.sprite = spriteGold;  // Gold
+                        case 'O' : block.sprite = spriteGold;         // Gold
                             break;
                         default :
                             break;
@@ -1099,7 +1099,7 @@ public class MarioMultiplay extends PApplet {
                 int bY = blockManager.y2bY(mario.y);
                  
                 ArrayList<Block> blockRow = blockManager.blocks.get(bY);
-                if (blockRow.size() <= bX) continue;  // ����� ����
+                if (blockRow.size() <= bX) continue;  // No block
                  
                 Block block = blockRow.get(bX);
                 if (block == null) continue;
@@ -1108,7 +1108,7 @@ public class MarioMultiplay extends PApplet {
                 else return true;
             }
             
-            // ������ true �� �̸� ���������� �ʾҴ�
+            // 위에서 true로 미리 빠져나가지 않았다
             return false;
         }
         
@@ -1122,7 +1122,7 @@ public class MarioMultiplay extends PApplet {
                 int bY = blockManager.y2bY(mario.y + mario.height);
                  
                 ArrayList<Block> blockRow = blockManager.blocks.get(bY);
-                if (blockRow.size() <= bX) continue;  // ����� ����
+                if (blockRow.size() <= bX) continue;  // No block
                  
                 Block block = blockRow.get(bX);
                 if (block == null) continue;
@@ -1130,7 +1130,7 @@ public class MarioMultiplay extends PApplet {
                 else return true;
             }
             
-            // ������ true �� �̸� ���������� �ʾҴ�
+            // 위에서 true로 미리 빠져나가지 않았다
             return false;
         }
         
@@ -1144,7 +1144,7 @@ public class MarioMultiplay extends PApplet {
                 int bY = blockManager.y2bY(y);
                 
                 ArrayList<Block> blockRow = blockManager.blocks.get(bY);
-                if (blockRow.size() <= bX) continue;  // ����� ����
+                if (blockRow.size() <= bX) continue;  // No block
                 
                 Block block = blockRow.get(bX);
                 if (block == null) continue;
@@ -1152,7 +1152,7 @@ public class MarioMultiplay extends PApplet {
                 else return true;
             }
             
-            // ������ true �� �̸� ���������� �ʾҴ�
+            // 위에서 true로 미리 빠져나가지 않았다
             return false;
         }
         
@@ -1166,7 +1166,7 @@ public class MarioMultiplay extends PApplet {
                 int bY = blockManager.y2bY(y);
                 
                 ArrayList<Block> blockRow = blockManager.blocks.get(bY);
-                if (blockRow.size() <= bX) continue;  // ����� ����
+                if (blockRow.size() <= bX) continue;  // No block
                 
                 Block block = blockRow.get(bX);
                 if (block == null) continue;
@@ -1174,7 +1174,7 @@ public class MarioMultiplay extends PApplet {
                 else return true;
             }
             
-            // ������ true �� �̸� ¥�������� �ʾҴ�
+            // 위에서 true로 미리 빠져나가지 않았다
             return false;
         }
     }
@@ -1275,9 +1275,10 @@ public class MarioMultiplay extends PApplet {
         
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
-                /* ���������� �б⸦ �ؼ�, sleep �����൵ �ȴ�. �����ڵ忡�� ���� �ڵ���
-                 */
-                
+                /* It read synchronously, so no need to sleep().
+                 * It is copied from the official sample code.
+                */
+
                 // Read envelope with address
                 String channel = subSocket.recvStr();
                 // Read message contents
