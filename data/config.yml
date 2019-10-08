@@ -1,6 +1,6 @@
 room_num: "123456"
 my_mario_num: 0
-my_frictional_force: 0.1  # Á¤»ó 0.4.   ¾óÀ½ ¼¼»ó: 0.1
+my_frictional_force: 0.7
 server_host: 127.0.0.1
 show_packet_indicator: true
 packet_frugal: true

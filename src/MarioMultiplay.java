@@ -38,16 +38,16 @@ public class MarioMultiplay extends PApplet {
     
     // Global constants
 
-    int FRAME_RATE = 60;
+    int FRAME_RATE = 30;
     int FRAMES_PER_SHOT = FRAME_RATE / 10;
     int WIDTH = 640;
     int HEIGHT = 432;
     int ASSET_SCALE = 2;
-    float GRAVITY = 0.7f;
-    float MARIO_JUMP_FORCE = 12f;
-    float BOOST_JUMP_FORCE = 4.8f;
-    float MARIO_VX_LIMIT = 4.7f;
-    float MARIO_FORCE = 0.2f;
+    float GRAVITY = 2.0f;
+    float MARIO_JUMP_FORCE = 19.0f;
+    float BOOST_JUMP_FORCE = 11.3f;
+    float MARIO_VX_LIMIT = 9.0f;
+    float MARIO_FORCE = 0.45f;
     int CAMERA_RANGE_LEFT = 170;
     int BLOCK_OFFSET = -16;
     String SERVER_HOST;
