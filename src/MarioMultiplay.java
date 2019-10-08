@@ -780,7 +780,6 @@ public class MarioMultiplay extends PApplet {
     // ============================== NEW FILE ==================================
 
     int framesPerShot = FRAMES_PER_SHOT;
-    int spriteScale = ASSET_SCALE;
 
     /**
      * Class for animating a sequence of GIFs
